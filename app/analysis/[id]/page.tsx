@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
-import { TrendLineChart } from "@/components/charts/trend-line-chart"
+import dynamic from "next/dynamic"
+const TrendLineChart = dynamic(() => import("@/components/charts/trend-line-chart").then(mod => mod.TrendLineChart), { ssr: false })
 import { MetricsGrid, Metric } from "@/components/metrics-grid"
 import { AnalysisTriggerDialog } from "@/components/analysis-trigger-dialog"
 import { Spinner } from "@/components/ui/spinner"
@@ -422,7 +423,7 @@ export default function AnalysisDetailPage() {
             </div>
 
             {/* AI intelligence Section (Dashboard Style) */}
-            <Card className="border-none shadow-none bg-[#e15554]/5 rounded-[2rem] overflow-hidden">
+            <Card className="border-none shadow-none bg-[#e15554]/5 rounded-4xl overflow-hidden">
                 <CardHeader className="p-10 pb-0">
                     <div className="flex items-center gap-6">
                         <div className="h-16 w-16 rounded-3xl bg-white dark:bg-black/40 flex items-center justify-center shadow-sm">
@@ -436,7 +437,7 @@ export default function AnalysisDetailPage() {
                 </CardHeader>
                 <CardContent className="p-10 space-y-12">
                     {/* Primary Insight */}
-                    <div className="p-10 bg-white dark:bg-black/20 rounded-[2rem] shadow-sm border border-muted-foreground/5 relative overflow-hidden group">
+                    <div className="p-10 bg-white dark:bg-black/20 rounded-4xl shadow-sm border border-muted-foreground/5 relative overflow-hidden group">
                         <div className="absolute top-0 left-0 w-2 h-full bg-[#e15554]" />
                         <h4 className="text-[10px] font-black uppercase text-[#e15554] tracking-[0.4em] mb-4">Core Observation</h4>
                         <p className="text-xl leading-relaxed font-bold text-foreground/90 italic">

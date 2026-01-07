@@ -37,7 +37,7 @@ export default function RootLayout({
               <main className="flex-1 overflow-auto">
                 <div className="flex h-16 items-center border-b px-6">
                   <SidebarTrigger className="-ml-1 mr-4" />
-                  <div className="h-4 w-[1px] bg-border mr-4" />
+                  <div className="h-4 w-px bg-border mr-4" />
                   <h1 className="text-sm font-medium text-muted-foreground">Economic Analysis Dashboard</h1>
                   <div className="ml-auto">
                     <ModeToggle />

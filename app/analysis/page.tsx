@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
-import { TrendLineChart } from "@/components/charts/trend-line-chart"
+import dynamic from "next/dynamic"
+const TrendLineChart = dynamic(() => import("@/components/charts/trend-line-chart").then(mod => mod.TrendLineChart), { ssr: false })
 import { MetricsGrid, Metric } from "@/components/metrics-grid"
 import { Spinner } from "@/components/ui/spinner"
 

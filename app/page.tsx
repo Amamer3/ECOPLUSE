@@ -1,8 +1,10 @@
 "use client"
 
+import { Suspense } from "react"
 import { MetricsGrid, Metric } from "@/components/metrics-grid"
-import { TrendLineChart } from "@/components/charts/trend-line-chart"
-import { TrendBarChart } from "@/components/charts/trend-bar-chart"
+import dynamic from "next/dynamic"
+const TrendLineChart = dynamic(() => import("@/components/charts/trend-line-chart").then(mod => mod.TrendLineChart), { ssr: false })
+const TrendBarChart = dynamic(() => import("@/components/charts/trend-bar-chart").then(mod => mod.TrendBarChart), { ssr: false })
 import { AnalysisTriggerDialog } from "@/components/analysis-trigger-dialog"
 import { Spinner } from "@/components/ui/spinner"
 import { Activity, CheckCircle, AlertCircle, TrendingUp, TrendingDown, DollarSign, Clock, Brain, AlertTriangle, Info } from "lucide-react"
@@ -73,7 +75,7 @@ interface N8nSingleResponse {
   timestamp: string
 }
 
-export default function DashboardPage() {
+function DashboardContent() {
   const searchParams = useSearchParams()
   const country = searchParams?.get("country") || 'US'
   const [detailedAnalysis, setDetailedAnalysis] = useState<N8nSingleResponse | null>(null)
@@ -364,7 +366,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex justify-between items-center px-1">
                   <span className="text-[10px] font-bold font-mono text-muted-foreground">{detailedAnalysis.full_analysis.statistics.min.toLocaleString()}</span>
-                  <div className="h-4 w-[1px] bg-muted mx-auto" />
+                  <div className="h-4 w-px bg-muted mx-auto" />
                   <span className="text-[10px] font-bold font-mono text-muted-foreground">{detailedAnalysis.full_analysis.statistics.max.toLocaleString()}</span>
                 </div>
               </div>
@@ -372,5 +374,13 @@ export default function DashboardPage() {
           </Card>
         </div>
     </div>
+  )
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center py-12"><Spinner className="h-8 w-8 mx-auto text-[#e15554]" /></div>}>
+      <DashboardContent />
+    </Suspense>
   )
 }

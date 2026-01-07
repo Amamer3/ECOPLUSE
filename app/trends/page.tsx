@@ -1,8 +1,10 @@
 "use client"
 
+import { Suspense } from "react"
 import { MetricsGrid, Metric } from "@/components/metrics-grid"
-import { TrendBarChart } from "@/components/charts/trend-bar-chart"
-import { TrendAreaChart } from "@/components/charts/trend-area-chart"
+import dynamic from "next/dynamic"
+const TrendBarChart = dynamic(() => import("@/components/charts/trend-bar-chart").then(mod => mod.TrendBarChart), { ssr: false })
+const TrendAreaChart = dynamic(() => import("@/components/charts/trend-area-chart").then(mod => mod.TrendAreaChart), { ssr: false })
 import { TrendingUp, BarChart2, Activity, Zap } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { getCountryLabel } from "@/lib/countries"
@@ -53,7 +55,7 @@ interface N8nSingleResponse {
     timestamp: string
 }
 
-export default function TrendsPage() {
+function TrendsPageContent() {
     const searchParams = useSearchParams()
     const country = searchParams?.get("country") || 'US'
     const [analysis, setAnalysis] = useState<N8nSingleResponse | null>(null)
@@ -240,5 +242,13 @@ export default function TrendsPage() {
                 </CardContent>
             </Card>
         </div>
+    )
+}
+
+export default function TrendsPage() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center py-12"><Spinner className="h-8 w-8 mx-auto text-[#e15554]" /></div>}>
+            <TrendsPageContent />
+        </Suspense>
     )
 }

@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { usePathname, useSearchParams, useRouter } from "next/navigation"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { countries } from "@/lib/countries"
 
-export function CountrySelector() {
+function CountrySelectorContent() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -38,5 +38,13 @@ export function CountrySelector() {
         </SelectContent>
       </Select>
     </div>
+  )
+}
+
+export function CountrySelector() {
+  return (
+    <Suspense fallback={<div className="px-2 py-2 w-40 h-10 bg-muted rounded" />}>
+      <CountrySelectorContent />
+    </Suspense>
   )
 }

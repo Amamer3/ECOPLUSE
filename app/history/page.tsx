@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { AnalysisHistoryTable } from "@/components/analysis-history-table"
@@ -9,7 +10,7 @@ import { toast } from "sonner"
 
 const HISTORY_STORAGE_KEY = "analysisHistory"
 
-export default function HistoryPage() {
+function HistoryPageContent() {
   const [analyses, setAnalyses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const searchParams = useSearchParams()
@@ -184,5 +185,13 @@ export default function HistoryPage() {
         <AnalysisHistoryTable analyses={analyses} onViewDetails={handleViewDetails} onDownload={handleDownload} />
       )}
     </div>
+  )
+}
+
+export default function HistoryPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center py-12"><Spinner className="h-8 w-8 mx-auto text-[#e15554]" /></div>}>
+      <HistoryPageContent />
+    </Suspense>
   )
 }
