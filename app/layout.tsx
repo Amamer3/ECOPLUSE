@@ -8,6 +8,8 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/mode-toggle"
+import { LoadingProvider } from "@/hooks/use-loading"
+import { LoadingConsumer } from "@/components/loading-consumer"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -31,6 +33,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <LoadingProvider>
           <SidebarProvider>
             <div className="flex min-h-screen w-full">
               <AppSidebar />
@@ -47,9 +50,12 @@ export default function RootLayout({
               </main>
             </div>
           </SidebarProvider>
+          <LoadingConsumer />
           <Toaster />
           <Analytics />
-        </ThemeProvider>
+          </LoadingProvider>
+        </ThemeProvider
+        >
       </body>
     </html>
   )

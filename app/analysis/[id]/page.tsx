@@ -13,6 +13,7 @@ const TrendLineChart = dynamic(() => import("@/components/charts/trend-line-char
 import { MetricsGrid, Metric } from "@/components/metrics-grid"
 import { AnalysisTriggerDialog } from "@/components/analysis-trigger-dialog"
 import { Spinner } from "@/components/ui/spinner"
+import { useLoading } from "@/hooks/use-loading"
 
 // Define the comprehensive response interface matching the webhook
 interface N8nSingleResponse {
@@ -66,10 +67,10 @@ interface N8nSingleResponse {
 }
 
 export default function AnalysisDetailPage() {
-    const params = useParams()
-    const id = params.id as string
+    const { id } = useParams()
     const [analysis, setAnalysis] = useState<N8nSingleResponse | null>(null)
     const [loading, setLoading] = useState(true)
+    const { withLoading } = useLoading()
     const [refreshKey, setRefreshKey] = useState(0)
 
     const handleAnalysisSuccess = (analysisData?: any) => {
@@ -186,23 +187,41 @@ export default function AnalysisDetailPage() {
         }
     }, [id, refreshKey])
 
-    const handleDownload = () => {
+    const handleDownload = async () => {
         if (!analysis) {
             toast.error("No analysis data to download")
             return
         }
         try {
-            const jsonString = JSON.stringify(analysis, null, 2)
-            const blob = new Blob([jsonString], { type: "application/json; charset=utf-8" })
-            const url = window.URL.createObjectURL(blob)
-            const a = document.createElement("a")
-            a.href = url
-            a.download = `analysis-${analysis.data.indicator}-${analysis.data.country}-${Date.now()}.json`
-            document.body.appendChild(a)
-            a.click()
-            window.URL.revokeObjectURL(url)
-            document.body.removeChild(a)
-            toast.success("Download started")
+            const { withLoading } = useLoading()
+            await withLoading(async () => {
+                 // Use API route to download CSV
+                 // Ensure id is valid
+                 const idParam = typeof id === "string" ? id.trim() : ""
+                 if (!idParam) {
+                     toast.error("Invalid analysis ID")
+                     return
+                 }
+
+                const res = await fetch(`/api/analysis/${idParam}/download`)
+                if (!res.ok) {
+                    console.error("[Analysis] Download API error:", res.status, res.statusText)
+                    toast.error("Failed to start download")
+                    return
+                }
+
+                const blob = await res.blob()
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement("a")
+                a.href = url
+                // Default filename; server also sets Content-Disposition
+                a.download = `analysis-${idParam}-${Date.now()}.csv`
+                document.body.appendChild(a)
+                a.click()
+                window.URL.revokeObjectURL(url)
+                document.body.removeChild(a)
+                toast.success("Download started")
+            }, "Preparing CSV download...")
         } catch (error) {
             console.error("[Analysis] Download error:", error)
             toast.error("Failed to download analysis")

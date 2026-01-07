@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation"
 import { AnalysisHistoryTable } from "@/components/analysis-history-table"
 import { AnalysisTriggerDialog } from "@/components/analysis-trigger-dialog"
 import { Spinner } from "@/components/ui/spinner"
+import { useLoading } from "@/hooks/use-loading"
 import { toast } from "sonner"
 
 const HISTORY_STORAGE_KEY = "analysisHistory"
@@ -14,6 +15,7 @@ function HistoryPageContent() {
   const [analyses, setAnalyses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const searchParams = useSearchParams()
+  const { withLoading } = useLoading()
 
   useEffect(() => {
     fetchAnalysesFromStorage()
@@ -110,47 +112,39 @@ function HistoryPageContent() {
 
   const handleDownload = async (id: string) => {
     try {
-      // Validate ID
-      if (!id || typeof id !== "string" || id.trim() === "") {
-        toast.error("Invalid analysis ID")
-        return
-      }
+       await withLoading(async () => {
+        // Validate ID
+        if (!id || typeof id !== "string" || id.trim() === "") {
+          toast.error("Invalid analysis ID")
+          return
+        }
 
-      console.log("[History] Downloading analysis:", id)
+        console.log("[History] Downloading analysis:", id)
 
-      // Find the analysis in localStorage
-      const storedData = localStorage.getItem(HISTORY_STORAGE_KEY)
-      if (!storedData) {
-        throw new Error("Analysis not found")
-      }
+        // Call API route to get CSV
+        const res = await fetch(`/api/analysis/${id.trim()}/download`)
+        if (!res.ok) {
+          console.error("[History] Download API error:", res.status, res.statusText)
+          toast.error("Failed to start download")
+          return
+        }
 
-      const allAnalyses = JSON.parse(storedData)
-      const analysis = allAnalyses.find(
-        (a: any) => a.id === id || a.data?.indicator === id
-      )
+        const blob = await res.blob()
+        if (!blob || blob.size === 0) {
+          throw new Error("Download resulted in empty file")
+        }
 
-      if (!analysis) {
-        throw new Error("Analysis not found")
-      }
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = `analysis-${id}-${Date.now()}.csv`
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
 
-      // Create and download JSON file
-      const jsonString = JSON.stringify(analysis, null, 2)
-      const blob = new Blob([jsonString], { type: "application/json; charset=utf-8" })
-
-      if (!blob || blob.size === 0) {
-        throw new Error("Download resulted in empty file")
-      }
-
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `analysis-${id}-${Date.now()}.json`
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
-
-      toast.success("Download started")
+        toast.success("Download started")
+      }, "Preparing CSV download...")
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to download analysis"
       console.error("[History] Download error:", errorMessage)

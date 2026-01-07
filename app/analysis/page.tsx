@@ -12,6 +12,7 @@ import dynamic from "next/dynamic"
 const TrendLineChart = dynamic(() => import("@/components/charts/trend-line-chart").then(mod => mod.TrendLineChart), { ssr: false })
 import { MetricsGrid, Metric } from "@/components/metrics-grid"
 import { Spinner } from "@/components/ui/spinner"
+import { useLoading } from "@/hooks/use-loading"
 
 interface N8nSingleResponse {
     success: boolean
@@ -69,6 +70,7 @@ const HISTORY_STORAGE_KEY = "analysisHistory"
 export default function AnalysisPage() {
     const [analysis, setAnalysis] = useState<N8nSingleResponse | null>(null)
     const [loading, setLoading] = useState(false)
+    const { withLoading } = useLoading()
 
     // Load data from localStorage on mount
     useEffect(() => {
@@ -140,23 +142,39 @@ export default function AnalysisPage() {
         }
     }
 
-    const handleDownload = () => {
+    const handleDownload = async () => {
         if (!analysis) {
             toast.error("No analysis data to download")
             return
         }
         try {
-            const jsonString = JSON.stringify(analysis, null, 2)
-            const blob = new Blob([jsonString], { type: "application/json; charset=utf-8" })
-            const url = window.URL.createObjectURL(blob)
-            const a = document.createElement("a")
-            a.href = url
-            a.download = `analysis-${analysis.data.indicator}-${analysis.data.country}-${Date.now()}.json`
-            document.body.appendChild(a)
-            a.click()
-            window.URL.revokeObjectURL(url)
-            document.body.removeChild(a)
-            toast.success("Download started")
+            const { withLoading } = useLoading()
+            await withLoading(async () => {
+                // Use API route to download CSV using indicator as id
+                const idParam = analysis?.data?.indicator?.trim()
+                if (!idParam) {
+                    toast.error("Invalid analysis ID")
+                    return
+                }
+
+                const res = await fetch(`/api/analysis/${idParam}/download`)
+                if (!res.ok) {
+                    console.error("[Analysis Page] Download API error:", res.status, res.statusText)
+                    toast.error("Failed to start download")
+                    return
+                }
+
+                const blob = await res.blob()
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement("a")
+                a.href = url
+                a.download = `analysis-${idParam}-${Date.now()}.csv`
+                document.body.appendChild(a)
+                a.click()
+                window.URL.revokeObjectURL(url)
+                document.body.removeChild(a)
+                toast.success("Download started")
+            }, "Preparing CSV download...")
         } catch (error) {
             console.error("[Analysis Page] Download error:", error)
             toast.error("Failed to download analysis")
