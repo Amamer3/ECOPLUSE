@@ -19,17 +19,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { PlayCircle } from "lucide-react"
 import { toast } from "sonner"
-
-const countries = [
-  { value: "US", label: "United States" },
-  { value: "GB", label: "United Kingdom" },
-  { value: "DE", label: "Germany" },
-  { value: "FR", label: "France" },
-  { value: "JP", label: "Japan" },
-  { value: "CN", label: "China" },
-  { value: "IN", label: "India" },
-  { value: "CA", label: "Canada" },
-]
+import { Spinner } from "@/components/ui/spinner"
+import { countries } from "@/lib/countries" 
 
 const indicators = [
   { value: "GDP", label: "GDP Growth" },
@@ -41,7 +32,7 @@ const indicators = [
 ]
 
 interface AnalysisTriggerDialogProps {
-  onSuccess?: () => void
+  onSuccess?: (analysisData?: any) => void
 }
 
 export function AnalysisTriggerDialog({ onSuccess }: AnalysisTriggerDialogProps) {
@@ -63,6 +54,25 @@ export function AnalysisTriggerDialog({ onSuccess }: AnalysisTriggerDialogProps)
       return
     }
 
+    // Validate dates
+    const startDate = new Date(formData.startDate)
+    const endDate = new Date(formData.endDate)
+
+    if (isNaN(startDate.getTime())) {
+      toast.error("Invalid start date")
+      return
+    }
+
+    if (isNaN(endDate.getTime())) {
+      toast.error("Invalid end date")
+      return
+    }
+
+    if (startDate >= endDate) {
+      toast.error("Start date must be before end date")
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -72,24 +82,39 @@ export function AnalysisTriggerDialog({ onSuccess }: AnalysisTriggerDialogProps)
         body: JSON.stringify(formData),
       })
 
-      if (!response.ok) throw new Error("Failed to trigger analysis")
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData.error || `Server error: ${response.status}`
+        throw new Error(errorMessage)
+      }
 
       const result = await response.json()
-      console.log("Analysis Trigger Result:", result)
+      
+      // Check for error in response
+      if (result.error) {
+        throw new Error(result.error)
+      }
 
+      console.log("[Trigger] Analysis started:", result)
       toast.success("Analysis started successfully")
       setOpen(false)
       setFormData({ country: "", indicator: "", startDate: "", endDate: "" })
 
-      router.push("/")
-      router.refresh()
-
+      // If callback provided, use it (for detail page)
       if (onSuccess) {
-        onSuccess()
+        console.log("[Trigger] Calling onSuccess callback with data")
+        onSuccess(result)
+      } else {
+        // Otherwise refresh page (for dashboard)
+        console.log("[Trigger] No callback, refreshing page")
+        setTimeout(() => {
+          router.refresh()
+        }, 300)
       }
     } catch (error) {
-      console.error("Trigger error:", error)
-      toast.error("Failed to start analysis")
+      const errorMessage = error instanceof Error ? error.message : "Failed to start analysis"
+      console.error("[Trigger] Error:", errorMessage)
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -170,8 +195,15 @@ export function AnalysisTriggerDialog({ onSuccess }: AnalysisTriggerDialogProps)
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Starting..." : "Start Analysis"}
+            <Button type="submit" disabled={loading} className="gap-2">
+              {loading ? (
+                <>
+                  <Spinner className="h-4 w-4" />
+                  Starting...
+                </>
+              ) : (
+                "Start Analysis"
+              )}
             </Button>
           </DialogFooter>
         </form>

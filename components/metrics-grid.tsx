@@ -1,12 +1,12 @@
-import { ArrowDownIcon, ArrowUpIcon } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
+import { LucideIcon } from "lucide-react"
 
 export interface Metric {
   title: string
   value: string
   change?: string
   trend?: "up" | "down"
-  icon: any
+  icon?: LucideIcon
 }
 
 interface MetricsGridProps {
@@ -19,8 +19,7 @@ export function MetricsGrid({ metrics }: MetricsGridProps) {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i} className="animate-pulse">
-            <CardHeader className="h-20 bg-muted/40" />
-            <CardContent className="h-24" />
+            <CardContent className="p-6 h-24" />
           </Card>
         ))}
       </div>
@@ -29,34 +28,25 @@ export function MetricsGrid({ metrics }: MetricsGridProps) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {metrics.map((metric) => (
-        <Card key={metric.title}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
-            <metric.icon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metric.value}</div>
+      {metrics.map((metric, index) => (
+        <Card key={index} className="overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-6 flex flex-col items-start justify-center min-h-[120px]">
+            {/* Big Number with Marketing360 Red Accent */}
+            <div className="text-3xl font-bold text-[#e15554] tracking-tight">
+              {metric.value}
+            </div>
+            {/* Label */}
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-2">
+              {metric.title}
+            </p>
+            {/* Change Indicator */}
             {metric.change && (
-              <p className="flex items-center text-xs text-muted-foreground pt-1">
-                <span
-                  className={
-                    metric.trend === "up"
-                      ? "text-green-500 flex items-center mr-1"
-                      : metric.trend === "down"
-                        ? "text-red-500 flex items-center mr-1"
-                        : "text-muted-foreground flex items-center mr-1"
-                  }
-                >
-                  {metric.trend === "up" ? (
-                    <ArrowUpIcon className="h-3 w-3 mr-0.5" />
-                  ) : metric.trend === "down" ? (
-                    <ArrowDownIcon className="h-3 w-3 mr-0.5" />
-                  ) : null}
+              <div className="flex items-center mt-2 text-xs">
+                <span className={`${metric.trend === 'up' ? 'text-emerald-500' : 'text-rose-500'} font-medium`}>
                   {metric.change}
                 </span>
-                from last quarter
-              </p>
+                <span className="text-muted-foreground ml-1">vs last period</span>
+              </div>
             )}
           </CardContent>
         </Card>

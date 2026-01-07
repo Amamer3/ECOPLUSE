@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { CountrySelector } from "@/components/country-selector"
 
 const items = [
   {
@@ -61,6 +62,9 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
+        <div className="px-2 py-2">
+          <CountrySelector />
+        </div>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Settings">

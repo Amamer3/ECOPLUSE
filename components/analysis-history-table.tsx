@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import { Eye, Download } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
+import { getCountryLabel } from "@/lib/countries"
 
 type AnalysisStatus = "pending" | "running" | "completed" | "failed"
 
@@ -56,7 +57,7 @@ export function AnalysisHistoryTable({ analyses, onViewDetails, onDownload }: An
           ) : (
             analyses.map((analysis) => (
               <TableRow key={analysis.id}>
-                <TableCell className="font-medium">{analysis.country}</TableCell>
+                <TableCell className="font-medium">{getCountryLabel(analysis.country) || analysis.country}</TableCell>
                 <TableCell>{analysis.indicator}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {analysis.startDate} → {analysis.endDate}
