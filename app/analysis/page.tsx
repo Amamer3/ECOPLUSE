@@ -249,20 +249,20 @@ export default function AnalysisPage() {
     ]
 
     return (
-        <div className="space-y-8 max-w-[1600px] mx-auto pb-12">
+        <div className="space-y-6 sm:space-y-8 max-w-[1600px] mx-auto pb-10 sm:pb-12 px-4 sm:px-0">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-muted pb-8 pt-4">
-                <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-muted pb-6 sm:pb-8 pt-3 sm:pt-4 gap-4 sm:gap-6">
+                <div className="flex items-center gap-3 sm:gap-4">
                     <Button variant="ghost" size="icon" asChild className="rounded-full hover:bg-accent/10">
                         <Link href="/">
                             <ArrowLeft className="h-4 w-4" />
                         </Link>
                     </Button>
                     <div>
-                        <h1 className="text-4xl font-black tracking-tighter text-foreground/90 uppercase">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter text-foreground/90 uppercase">
                             Analysis: {info.indicator}
                         </h1>
-                        <nav className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">
+                        <nav className="flex items-center gap-2 text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">
                             <span>{info.indicator}</span>
                             <span className="opacity-20">/</span>
                             <span>{info.country}</span>
@@ -271,7 +271,7 @@ export default function AnalysisPage() {
                         </nav>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex w-full sm:w-auto flex-wrap items-center justify-end gap-2 sm:gap-4">
                     <Badge variant="outline" className="px-3 py-1 font-black text-[9px] uppercase tracking-[0.2em] border-[#e15554]/20 text-[#e15554]">
                         Intelligence System
                     </Badge>
@@ -288,13 +288,13 @@ export default function AnalysisPage() {
             </div>
 
             {/* Main Content Area */}
-            <div className="grid gap-8 lg:grid-cols-12">
+            <div className="grid gap-6 sm:gap-8 lg:grid-cols-12">
 
                 {/* Left Column: Chart & Anomalies */}
-                <div className="lg:col-span-8 space-y-8">
+                <div className="lg:col-span-8 space-y-6 sm:space-y-8">
                     {/* Chart Card */}
                     <Card className="border-none shadow-none bg-accent/5 overflow-hidden rounded-3xl">
-                        <CardHeader className="p-8 pb-4">
+                        <CardHeader className="p-4 md:p-8 pb-3 md:pb-4">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <CardTitle className="text-xl font-black text-[#e15554] tracking-tighter uppercase">Trend Projection</CardTitle>
@@ -305,17 +305,17 @@ export default function AnalysisPage() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-8 pt-4">
+                        <CardContent className="p-4 md:p-8 pt-2 md:pt-4">
                             <TrendLineChart data={chartData} series={seriesConfig} type="area" />
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* Right Column: AI Insights & Statistics */}
-                <div className="lg:col-span-4 space-y-8">
+                <div className="lg:col-span-4 space-y-6 sm:space-y-8">
                     {/* AI Insights Card */}
                     <Card className="border-none shadow-none bg-[#e15554]/5 rounded-3xl overflow-hidden">
-                        <CardHeader className="p-6 pb-4">
+                        <CardHeader className="p-4 md:p-6 pb-3 md:pb-4">
                             <div className="flex items-center gap-3">
                                 <div className="h-10 w-10 rounded-lg bg-white dark:bg-black/40 flex items-center justify-center">
                                     <Brain className="h-5 w-5 text-[#e15554]" />
@@ -326,8 +326,8 @@ export default function AnalysisPage() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-6 pt-0 space-y-4">
-                            <p className="text-sm leading-relaxed font-semibold text-foreground/80">
+                        <CardContent className="p-4 md:p-6 pt-0 space-y-3 md:space-y-4">
+                            <p className="text-xs sm:text-sm leading-relaxed font-semibold text-foreground/80">
                                 {details.ai_analysis.insights}
                             </p>
                         </CardContent>
@@ -335,18 +335,18 @@ export default function AnalysisPage() {
 
                     {/* Statistics Card */}
                     <Card className="border-none shadow-none bg-accent/5 rounded-3xl">
-                        <CardHeader className="p-6 pb-4">
+                        <CardHeader className="p-4 md:p-6 pb-3 md:pb-4">
                             <CardTitle className="text-lg font-black tracking-tighter uppercase">Statistics</CardTitle>
                             <CardDescription className="text-[9px] font-bold uppercase tracking-[0.15em]">Data Integrity</CardDescription>
                         </CardHeader>
-                        <CardContent className="p-6 pt-0 space-y-6">
+                        <CardContent className="p-4 md:p-6 pt-0 space-y-4 md:space-y-6">
                             <div className="space-y-3">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Mean</span>
+                                    <span className="text-[9px] sm:text-[10px] font-black uppercase text-muted-foreground tracking-widest">Mean</span>
                                     <span className="text-lg font-black">{details.statistics.mean.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Std Dev</span>
+                                    <span className="text-[9px] sm:text-[10px] font-black uppercase text-muted-foreground tracking-widest">Std Dev</span>
                                     <span className="text-lg font-black text-rose-400">{details.statistics.std.toFixed(2)}</span>
                                 </div>
                             </div>

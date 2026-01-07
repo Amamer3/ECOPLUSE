@@ -38,7 +38,7 @@ export default function RootLayout({
             <div className="flex min-h-screen w-full">
               <AppSidebar />
               <main className="flex-1 overflow-auto">
-                <div className="flex h-16 items-center border-b px-6">
+                <div className="flex h-14 sm:h-16 items-center border-b px-4 sm:px-6">
                   <SidebarTrigger className="-ml-1 mr-4" />
                   <div className="h-4 w-px bg-border mr-4" />
                   <h1 className="text-sm font-medium text-muted-foreground">Economic Analysis Dashboard</h1>
@@ -46,7 +46,7 @@ export default function RootLayout({
                     <ModeToggle />
                   </div>
                 </div>
-                <div className="p-6">{children}</div>
+                <div className="p-4 sm:p-6">{children}</div>
               </main>
             </div>
           </SidebarProvider>

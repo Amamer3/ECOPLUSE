@@ -35,8 +35,8 @@ interface AnalysisHistoryTableProps {
 
 export function AnalysisHistoryTable({ analyses, onViewDetails, onDownload }: AnalysisHistoryTableProps) {
   return (
-    <div className="rounded-xl border bg-card">
-      <Table>
+    <div className="rounded-xl border bg-card p-2 sm:p-4">
+      <Table className="text-xs sm:text-sm">
         <TableHeader>
           <TableRow>
             <TableHead>Country</TableHead>

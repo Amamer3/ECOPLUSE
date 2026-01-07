@@ -2,7 +2,7 @@
 
 import * as Highcharts from "highcharts"
 import HighchartsReact from "highcharts-react-official"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 
 interface TrendAreaChartProps {
     data: {
@@ -15,14 +15,28 @@ interface TrendAreaChartProps {
 
 export function TrendAreaChart({ data, title, color = "#e15554" }: TrendAreaChartProps) {
     const chartRef = useRef<HighchartsReact.RefObject>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
 
     if (!data || data.length === 0) {
         return (
-            <div className="h-[300px] w-full flex items-center justify-center text-muted-foreground border rounded-xl bg-accent/5">
+            <div className="w-full h-[220px] sm:h-[280px] md:h-[320px] lg:h-[360px] flex items-center justify-center text-muted-foreground border rounded-xl bg-accent/5">
                 No data available
             </div>
         )
     }
+
+    useEffect(() => {
+        const container = containerRef.current
+        const chart = chartRef.current?.chart as Highcharts.Chart | undefined
+        if (!container || !chart) return
+        const handleResize = () => {
+            chart.setSize(undefined, container.clientHeight, false)
+        }
+        handleResize()
+        const ro = new ResizeObserver(handleResize)
+        ro.observe(container)
+        return () => ro.disconnect()
+    }, [])
 
     const options: Highcharts.Options = {
         chart: {
@@ -122,7 +136,7 @@ export function TrendAreaChart({ data, title, color = "#e15554" }: TrendAreaChar
     }
 
     return (
-        <div className="h-[300px] w-full">
+        <div ref={containerRef} className="w-full h-[220px] sm:h-[280px] md:h-[320px] lg:h-[360px]">
             <HighchartsReact
                 highcharts={Highcharts}
                 options={options}

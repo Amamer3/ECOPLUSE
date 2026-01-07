@@ -167,17 +167,17 @@ function TrendsPageContent() {
 
     if (!analysis) {
         return (
-            <div className="space-y-6">
-                <div className="flex items-center justify-between">
+            <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                     <div className="flex items-center gap-2">
                         <div className="p-2 rounded-lg bg-primary/10 text-primary">
                             <TrendingUp className="w-6 h-6" />
                         </div>
-                        <h1 className="text-3xl font-bold tracking-tight">Market Trends</h1>
+                        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Market Trends</h1>
                     </div>
                     <AnalysisTriggerDialog onSuccess={handleAnalysisSuccess} />
                 </div>
-                <div className="p-12 text-center border rounded-xl bg-muted/10 text-muted-foreground">
+                <div className="p-6 sm:p-8 md:p-12 text-center border rounded-xl bg-muted/10 text-sm sm:text-base text-muted-foreground">
                     No trend analysis data available currently. Please run an analysis from the dashboard.
                 </div>
             </div>
@@ -185,15 +185,15 @@ function TrendsPageContent() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                 <div className="flex items-center gap-2">
                     <div className="p-2 rounded-lg bg-primary/10 text-primary">
                         <TrendingUp className="w-6 h-6" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Market Trends: {analysis.data.indicator}</h1>
-                        <p className="text-muted-foreground mt-1">
+                        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Market Trends: {analysis.data.indicator}</h1>
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                             {getCountryLabel(analysis.data.country) || analysis.data.country} • {analysis.full_analysis.ai_analysis.trend_description}
                         </p>
                     </div>
@@ -203,25 +203,25 @@ function TrendsPageContent() {
 
             <MetricsGrid metrics={metrics} />
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                 {/* Area Chart for Trend Flow */}
                 <Card>
-                    <CardHeader>
+                    <CardHeader className="p-4 md:p-6">
                         <CardTitle>Trend Progression</CardTitle>
                         <CardDescription>Visualizing the continuous movement and momentum.</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-4 md:p-6">
                         <TrendAreaChart data={forecastData} title={analysis.data.indicator} color="#e15554" />
                     </CardContent>
                 </Card>
 
                 {/* Bar Chart for Distinct Values */}
                 <Card>
-                    <CardHeader>
+                    <CardHeader className="p-4 md:p-6">
                         <CardTitle>Projected Values</CardTitle>
                         <CardDescription>Forecasted milestones for the upcoming periods.</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-4 md:p-6">
                         <TrendBarChart data={forecastData} title={analysis.data.indicator} color="#e15554" />
                     </CardContent>
                 </Card>
@@ -229,11 +229,11 @@ function TrendsPageContent() {
 
             {/* Additional Market Analysis Block */}
             <Card className="bg-muted/50 border-none">
-                <CardHeader>
+                <CardHeader className="p-4 md:p-6">
                     <CardTitle className="text-base">Market Analysis Summary</CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                <CardContent className="p-4 md:p-6">
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                         The current market trend for <strong>{analysis.data.indicator}</strong> in <strong>{getCountryLabel(analysis.data.country) || analysis.data.country}</strong> is characterized as
                         <span className="font-semibold text-foreground"> {analysis.full_analysis.ai_analysis.trend}</span> with
                         <span className="font-semibold text-foreground"> {analysis.full_analysis.ai_analysis.trend_strength}</span> momentum.

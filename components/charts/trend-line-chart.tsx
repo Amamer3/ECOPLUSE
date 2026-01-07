@@ -26,14 +26,34 @@ interface TrendLineChartProps {
 
 export function TrendLineChart({ data, series, title, type = 'line' }: TrendLineChartProps) {
     const chartRef = useRef<HighchartsReact.RefObject>(null)
+    // Add container ref for responsive height
+    const containerRef = useRef<HTMLDivElement>(null)
 
     if (!data || data.length === 0) {
         return (
-            <div className="h-[350px] w-full flex items-center justify-center text-muted-foreground border rounded-xl bg-accent/5">
+            <div className="w-full h-[220px] sm:h-[280px] md:h-[320px] lg:h-[360px] flex items-center justify-center text-muted-foreground border rounded-xl bg-accent/5">
                 No visualization data available
             </div>
         )
     }
+
+    // Observe container height and update chart size accordingly
+    useEffect(() => {
+        const container = containerRef.current
+        const chart = chartRef.current?.chart as Highcharts.Chart | undefined
+        if (!container || !chart) return
+
+        const handleResize = () => {
+            const height = container.clientHeight
+            chart.setSize(undefined, height, false)
+        }
+        // Initial size sync
+        handleResize()
+        // Observe container changes
+        const ro = new ResizeObserver(handleResize)
+        ro.observe(container)
+        return () => ro.disconnect()
+    }, [])
 
     const options: Highcharts.Options = {
         chart: {
@@ -212,7 +232,7 @@ export function TrendLineChart({ data, series, title, type = 'line' }: TrendLine
     }
 
     return (
-        <div className="h-[350px] w-full">
+        <div ref={containerRef} className="w-full h-[220px] sm:h-[280px] md:h-[320px] lg:h-[360px]">
             <HighchartsReact
                 highcharts={Highcharts}
                 options={options}

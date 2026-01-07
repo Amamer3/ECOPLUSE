@@ -224,12 +224,12 @@ function DashboardContent() {
   ]
 
   return (
-    <div className="space-y-8 max-w-[1600px] mx-auto pb-12">
+    <div className="space-y-6 sm:space-y-8 max-w-[1600px] mx-auto pb-12 px-4 sm:px-0">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-muted pb-8 pt-4">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between border-b border-muted pb-6 sm:pb-8 pt-2 sm:pt-4">
         <div>
-          <h1 className="text-4xl font-black tracking-tighter text-foreground/90 uppercase">{overviewTitle}</h1>
-          <nav className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter text-foreground/90 uppercase">{overviewTitle}</h1>
+          <nav className="flex items-center gap-2 text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">
             <Link href="/" className="hover:text-primary transition-colors">Economic Dashboard</Link>
             <span className="opacity-20">/</span>
             <span className="text-[#e15554]">Intelligence System</span>
@@ -247,10 +247,9 @@ function DashboardContent() {
       <MetricsGrid metrics={metrics} />
 
       {/* Split Chart Row */}
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {/* Trend Analysis */}
-        <Card className="border-none shadow-none bg-accent/5 overflow-hidden">
-          <CardHeader className="pb-10">
+        <Card className="border-none shadow-none bg-accent/5 overflow-hidden">\n          <CardHeader className="pb-6 md:pb-10">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-xl font-black text-[#e15554] tracking-tighter uppercase">Predictive Analysis</CardTitle>
@@ -267,8 +266,7 @@ function DashboardContent() {
         </Card>
 
         {/* Volume Analysis */}
-        <Card className="border-none shadow-none bg-accent/5 overflow-hidden">
-          <CardHeader className="pb-10">
+        <Card className="border-none shadow-none bg-accent/5 overflow-hidden">\n          <CardHeader className="pb-6 md:pb-10">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-xl font-black text-[#e15554] tracking-tighter uppercase">Volume Metrics</CardTitle>
@@ -286,10 +284,10 @@ function DashboardContent() {
       </div>
 
       {/* Bottom Row - AI & Stats */}
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid gap-6 sm:gap-8 lg:grid-cols-3">
           {/* AI Insights (Wide) */}
           <Card className="lg:col-span-2 border-none shadow-none bg-[#e15554]/5 rounded-3xl overflow-hidden">
-            <CardHeader className="p-8 pb-0">
+            <CardHeader className="p-4 md:p-8 pb-0">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-2xl bg-white dark:bg-black/40 flex items-center justify-center shadow-sm">
                   <Brain className="h-6 w-6 text-[#e15554]" />
@@ -300,14 +298,14 @@ function DashboardContent() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-8 space-y-10">
+            <CardContent className="p-4 md:p-8 space-y-6 md:space-y-10">
               <div className="p-6 bg-white dark:bg-black/20 rounded-2xl shadow-sm border border-muted-foreground/5 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1.5 h-full bg-[#e15554]" />
                 <p className="text-base leading-relaxed font-bold text-foreground/80">
                   {detailedAnalysis.full_analysis.ai_analysis.insights}
                 </p>
               </div>
-              <div className="grid md:grid-cols-2 gap-10">
+              <div className="grid md:grid-cols-2 gap-6 md:gap-10">
                 <div className="space-y-4">
                   <h4 className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.3em] pb-3 border-b border-muted">Key Drivers</h4>
                   <ul className="space-y-4">
